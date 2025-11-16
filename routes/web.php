@@ -4,9 +4,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     if (auth()->check()) {
-        return redirect()->route('dashboard');
+        return redirect('/dashboard');
     }
-    return redirect()->route('login');
+    return redirect('/login');
 });
 
 // Authentication routes (login, register, password reset)
