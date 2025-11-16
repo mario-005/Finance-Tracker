@@ -1,10 +1,18 @@
 {
     "version": 2,
-    "framework": "laravel",
-    "buildCommand": "vite build",
+    "framework": null,
+    "buildCommand": "vite build && npm run build",
     "outputDirectory": "public",
     "public": true,
     "installCommand": "npm install --ignore-scripts --no-optional",
+    "functions": {
+        "api/index.php": { "maxDuration": 30 }
+    },
+    "routes": [
+        { "src": "/build/(.*)", "dest": "/public/build/$1" },
+        { "src": "/hot", "dest": "/public/hot" },
+        { "src": "/(.*)", "dest": "/api/index.php" }
+    ],
     "env": {
         "APP_ENV": "production",
         "APP_DEBUG": "false",
