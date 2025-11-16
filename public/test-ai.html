@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test AI Chat Endpoint</title>
+    <style>
+        body { font-family: Arial; max-width: 600px; margin: 50px auto; }
+        .box { border: 1px solid #ccc; padding: 20px; margin: 20px 0; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; }
+        #result { margin-top: 20px; padding: 10px; background: #f5f5f5; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>🤖 Test AI Chat Endpoint</h1>
+    
+    <div class="box">
+        <h2>Connection Test</h2>
+        <p>This will test if the AI chat endpoint is working properly.</p>
+        <button onclick="testEndpoint()">Test AI Chat Endpoint</button>
+    </div>
+    
+    <div id="result"></div>
+    
+    <script>
+    async function testEndpoint() {
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = '<p>Testing...</p>';
+        
+        try {
+            const response = await fetch('/ai/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                },
+                body: JSON.stringify({ message: 'test' })
+            });
+            
+            console.log('Response status:', response.status);
+            console.log('Response headers:', Array.from(response.headers.entries()));
+            
+            const text = await response.text();
+            console.log('Response body:', text.substring(0, 200));
+            
+            let html = `<p class="success">✅ Server responded (HTTP ${response.status})</p>`;
+            html += `<p><strong>Response preview:</strong></p>`;
+            html += `<pre>${escapeHtml(text.substring(0, 300))}</pre>`;
+            
+            if (!response.ok) {
+                html = `<p class="error">❌ HTTP Error ${response.status}</p>`;
+                html += `<p><strong>Error details:</strong></p>`;
+                html += `<pre>${escapeHtml(text.substring(0, 500))}</pre>`;
+            }
+            
+            resultDiv.innerHTML = html;
+        } catch (e) {
+            resultDiv.innerHTML = `<p class="error">❌ Connection Error: ${e.message}</p>`;
+        }
+    }
+    
+    function escapeHtml(text) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, m => map[m]);
+    }
+    </script>
+</body>
+</html>
