@@ -4,6 +4,7 @@
     "buildCommand": "vite build",
     "outputDirectory": "public",
     "public": true,
+    "installCommand": "npm install --ignore-scripts --no-optional",
     "env": {
         "APP_ENV": "production",
         "APP_DEBUG": "false",
